@@ -1,21 +1,29 @@
 import { Metadata } from "next";
-import sampleData from "@/db/sample-data";
+
 export const metadata: Metadata = {
   title: "HOME",
 };
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 import React from "react";
 import ProductList from "@/components/shared/product/product-list";
+import { getLatestProducts } from "@/lib/actions/product.actions";
+
 
 const HomePage = async () => {
-  // await delay(2000);
+  const latestProducts = await getLatestProducts();
+
+
+
   return (
     <>
-      <ProductList data={sampleData.products} title="Newest Arrivals" limit={4}/>
+      <ProductList data={latestProducts} title="Newest Arrivals" />
     </>
   );
 };
 
 export default HomePage;
+
+
+
