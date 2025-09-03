@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { SIGN_IN_DEFAULT_VALUES } from "@/lib/constants/index";
 import { signInWithCredentials } from "@/lib/actions/user.actions";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useActionState } from "react";
 import { useSearchParams } from "next/navigation";

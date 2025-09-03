@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { Plus, Minus, Loader } from "lucide-react";
 import { toast } from "sonner";
 
+
 import { useTransition } from "react";
 
-import { addToCart, removeItemFromCart } from "@/lib/actions/cart.actions";
+import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.actions";
 
 type AddToCartProps = {
   item: CartItem;
@@ -16,14 +17,12 @@ type AddToCartProps = {
 };
 const AddToCart = ({ item, cart }: AddToCartProps) => {
   const router = useRouter();
-
   const [isPending, startTransition] = useTransition();
   const [isPendingRemove, startTransitionRemove] = useTransition();
 
-
   const handleAddToCart = async () => {
     startTransition(async () => {
-      const response = await addToCart(item);
+      const response = await addItemToCart(item);
 
       if (!response.success) {
         toast.error(response.message);
@@ -35,7 +34,7 @@ const AddToCart = ({ item, cart }: AddToCartProps) => {
         action: (
           <Button
             className="bg-primary text-white hover:bg-gray-800"
-            onClick={() => router.push("cart")}
+            onClick={() => router.replace("/cart")}
           >
             Go To Cart
           </Button>
@@ -47,7 +46,6 @@ const AddToCart = ({ item, cart }: AddToCartProps) => {
   const exitInCart =
     cart &&
     (cart.items as CartItem[]).find((x) => x.productId === item.productId);
-  ("");
 
   const handleRemoveFromCart = async () => {
     startTransitionRemove(async () => {
