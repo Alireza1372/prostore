@@ -8,21 +8,13 @@ import { paymentMethodSchema } from "@/lib/validators";
 import { ArrowRight, Loader } from "lucide-react";
 import { Button } from "../ui/button";
 
-import { Input } from "../ui/input";
-import {
-  ControllerFieldState,
-  ControllerProps,
-  ControllerRenderProps,
-  useForm,
-  SubmitHandler,
-} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DEFAULT_PAYMENT_METHOD, PAYMENT_METHODS } from "@/lib/constants";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -55,9 +47,8 @@ const PaymentMethodForm = ({
         toast.error(res.message);
         return;
       }
-      
-      router.push("/place-order");
 
+      router.push("/place-order");
     });
   };
 
