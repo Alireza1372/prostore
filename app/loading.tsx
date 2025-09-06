@@ -1,5 +1,4 @@
 import loader from "@/assets/loader.gif";
-
 import Image from "next/image";
 const LoadingPage = () => {
   return (

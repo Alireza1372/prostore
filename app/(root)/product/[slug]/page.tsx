@@ -19,6 +19,7 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
   const product = await getProductBySlug(slug);
 
   if (!product) notFound();
+  
   const cart = await getMyCart();
   return (
     <>
