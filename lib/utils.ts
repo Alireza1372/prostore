@@ -74,6 +74,12 @@ export function formatCurrency(amount: number | string | null) {
   }
 }
 
+const NUMBER_FORMATTER = new Intl.NumberFormat("en-US");
+
+export function formatNumber(number: number) {
+  return NUMBER_FORMATTER.format(number);
+}
+
 export function formatId(id: string) {
   return `..${id.substring(id.length - 6)}`;
 }
@@ -126,7 +132,7 @@ export function formUrlQuery({ params, key, value }: FormUrlQueryParams) {
   const query = qs.parse(params);
   query[key] = value;
 
-  return qs.stringify(
+  return qs.stringifyUrl(
     {
       url: window.location.pathname,
       query,

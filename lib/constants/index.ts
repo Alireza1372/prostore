@@ -40,4 +40,4 @@ export const DEFAULT_PAYMENT_METHOD =
 
 
 
-export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 6;
+export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 2;

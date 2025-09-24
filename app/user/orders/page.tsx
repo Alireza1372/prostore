@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import { getMyOrders } from "@/lib/actions/order.actions";
 
-
-
 import {
   Table,
   TableBody,
@@ -73,7 +71,7 @@ const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
             </TableBody>
           </Table>
 
-          {orders.totalPages >= 1 && (
+          {orders.totalPages > 1 && (
             <Pagination
               page={Number(page) || 1}
               totalPages={orders.totalPages}
