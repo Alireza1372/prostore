@@ -1,11 +1,12 @@
 "use server";
 
-import { z } from "zod";
+import { success, z } from "zod";
 import {
   shippingAddressSchema,
   signInFormSchema,
   signUpFormSchema,
   paymentMethodSchema,
+  updateProfileSchema,
 } from "../validators";
 import { auth, signIn, signOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -152,6 +153,38 @@ export async function updateUserPaymentMethod(
     return {
       success: true,
       message: "User's payment method updated Successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+//update user profile
+type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export async function updateProfile(user: UpdateProfileInput) {
+  try {
+    const session = await auth();
+    const currentUser = await prisma.user.findFirst({
+      where: { id: session?.user?.id },
+    });
+
+    if (!currentUser) throw new Error("User Not Found");
+
+    const updatedUser = updateProfileSchema.parse(user);
+
+    await prisma.user.update({
+      where: { id: currentUser.id },
+      data: {
+        name: updatedUser.name,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Profile updated successfully",
     };
   } catch (error) {
     return {

@@ -11,6 +11,8 @@ import { CartItem, PaymentResult } from "@/types";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
 
+import { PAGE_SIZE } from "../constants";
+
 //create order and order items
 
 export async function createOrder() {
@@ -148,9 +150,6 @@ export async function createPaypalOrder(orderId: string) {
   }
 }
 
-
-
-
 export async function approvePayPalOrder(
   orderId: string,
   data: { orderID: string }
@@ -163,16 +162,16 @@ export async function approvePayPalOrder(
       },
     });
 
-    if (!order) throw new Error('Order not found');
+    if (!order) throw new Error("Order not found");
 
     const captureData = await paypal.capturePayment(data.orderID);
 
     if (
       !captureData ||
       captureData.id !== (order.paymentResult as PaymentResult)?.id ||
-      captureData.status !== 'COMPLETED'
+      captureData.status !== "COMPLETED"
     ) {
-      throw new Error('Error in PayPal payment');
+      throw new Error("Error in PayPal payment");
     }
 
     // Update order to paid
@@ -191,15 +190,12 @@ export async function approvePayPalOrder(
 
     return {
       success: true,
-      message: 'Your order has been paid',
+      message: "Your order has been paid",
     };
   } catch (error) {
     return { success: false, message: formatError(error) };
   }
 }
-
-
-
 
 export async function updateOrderToPaid({
   orderId,
@@ -218,9 +214,9 @@ export async function updateOrderToPaid({
     },
   });
 
-  if (!order) throw new Error('Order not found');
+  if (!order) throw new Error("Order not found");
 
-  if (order.isPaid) throw new Error('Order is already paid');
+  if (order.isPaid) throw new Error("Order is already paid");
 
   // Transaction to update order and account for product stock
   await prisma.$transaction(async (tx) => {
@@ -252,7 +248,7 @@ export async function updateOrderToPaid({
     },
   });
 
-  if (!updatedOrder) throw new Error('Order not found');
+  if (!updatedOrder) throw new Error("Order not found");
 
   // sendPurchaseReceipt({
   //   order: {
@@ -261,4 +257,34 @@ export async function updateOrderToPaid({
   //     paymentResult: updatedOrder.paymentResult as PaymentResult,
   //   },
   // });
+}
+
+//Get User's orders
+
+type getMyOrdersParams = {
+  limit?: number;
+  page: number;
+};
+export async function getMyOrders({
+  limit = PAGE_SIZE,
+  page,
+}: getMyOrdersParams) {
+  const session = await auth();
+  if (!session) throw new Error("User is not authenticated");
+
+  const data = await prisma.order.findMany({
+    where: { userId: session?.user?.id },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const dataCount = await prisma.order.count({
+    where: { userId: session?.user?.id },
+  });
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  };
 }

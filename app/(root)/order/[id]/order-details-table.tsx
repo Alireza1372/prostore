@@ -25,7 +25,7 @@ import {
   approvePayPalOrder,
 } from "@/lib/actions/order.actions";
 import { toast } from "sonner";
-import { prisma } from "@/db/prisma";
+
 
 type OrderDetailsTableProps = {
   order: Order;
