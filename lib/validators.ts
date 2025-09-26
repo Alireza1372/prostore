@@ -3,11 +3,11 @@ import { formatNumberWithDecimal } from "./utils";
 
 import { PAYMENT_METHODS } from "./constants";
 
-const currency = z.coerce
+const currency = z
   .string()
   .refine(
     (value) => /^\d+(\.\d{2})?$/.test(formatNumberWithDecimal(Number(value))),
-    "Price must be a valid currency format with two decimal places"
+    "Price must have exactly two decimal places"
   );
 
 export const insertProductSchema = z.object({
@@ -23,6 +23,10 @@ export const insertProductSchema = z.object({
   price: currency,
 });
 
+//schema for updating product
+export const updateProductSchema = insertProductSchema.extend({
+  id: z.string().min(1, "Id is required"),
+});
 //schema for sign in user
 export const signInFormSchema = z.object({
   email: z.string().email("Invalid email address"),
