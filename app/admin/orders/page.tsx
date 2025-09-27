@@ -31,23 +31,26 @@ const AdminOrdersPage = async ({ searchParams }: AdminOrdersPageProps) => {
   const orders = await getAllOrders({
     page: Number(page),
     limit: PAGE_SIZE,
-    // query: searchText,
+    query: searchText,
   });
 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3">
-        <h1 className="h2-bold">Orders</h1>
-        {searchText && (
-          <div>
-            Filtered by <i>&quot;{searchText}&quot;</i>{" "}
-            <Link href="/admin/orders">
-              <Button variant="outline" size="sm">
-                Remove Filter
-              </Button>
-            </Link>
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          <h1 className="h2-bold">Orders</h1>
+          {searchText && (
+            <div>
+              {" "}
+              Filtered By <i> &quot;{searchText}&quot; </i>
+              <Link href="/admin/orders">
+                <Button variant="outline" size="sm">
+                  Remove Filter
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
       <div className="overflow-x-auto">
         <Table>
