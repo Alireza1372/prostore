@@ -16,6 +16,7 @@ import { Order } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { useTransition } from "react";
+import StripePayment from "@/components/stripe-payment";
 
 import {
   PayPalButtons,
@@ -26,7 +27,6 @@ import {
 import {
   createPaypalOrder,
   approvePayPalOrder,
-
   updateOrderToPaidCOD,
   deliverOrder,
 } from "@/lib/actions/order.actions";
@@ -36,11 +36,13 @@ type OrderDetailsTableProps = {
   order: Order;
   paypalClientId?: string;
   isAdmin: boolean;
+  stripeClientSecret: string | null;
 };
 const OrderDetailsTable = ({
   order,
   paypalClientId,
   isAdmin,
+  stripeClientSecret,
 }: OrderDetailsTableProps) => {
   const {
     id,
@@ -252,6 +254,14 @@ const OrderDetailsTable = ({
                   />
                 </PayPalScriptProvider>
               )} */}
+
+              {!isPaid && paymentMethod === "Stripe" && stripeClientSecret && (
+                <StripePayment
+                  priceInCents={Number(order.taxPrice) * 100}
+                  clientSecret={stripeClientSecret}
+                  orderId={order.id}
+                />
+              )}
 
               {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (
                 <MarkAsPaidButton />

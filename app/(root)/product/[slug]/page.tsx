@@ -7,9 +7,12 @@ import ProductImages from "@/components/shared/product/product-image";
 import ProductPrice from "@/components/shared/product/product-price";
 import { getProductBySlug } from "@/lib/actions/product.actions";
 import AddToCart from "@/components/shared/cart/add-to-cart";
-
 import { getMyCart } from "@/lib/actions/cart.actions";
+import ReviewList from "@/components/shared/review-list";
+import { auth } from "@/auth";
+import { Section } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 type ProductDetailsPageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -17,9 +20,12 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
   const slug = (await params).slug;
 
   const product = await getProductBySlug(slug);
-
   if (!product) notFound();
-  
+
+  const session = await auth();
+
+  const userId = session?.user.id;
+
   const cart = await getMyCart();
   return (
     <>
@@ -89,6 +95,16 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
             </Card>
           </div>
         </div>
+      </section>
+      <section className="mt-10">
+        <h2 className="h2-bold">Customer Reviews form</h2>
+        <ReviewList
+          userId={userId || ""}
+          productId={product.id}
+          productSlug={product.slug}
+        />
+
+        
       </section>
     </>
   );

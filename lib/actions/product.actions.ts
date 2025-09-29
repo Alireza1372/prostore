@@ -8,6 +8,7 @@ import { convertToPlainObject, formatError } from "../utils";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { insertProductSchema, updateProductSchema } from "../validators";
+import { da } from "zod/v4/locales";
 
 //Get Latest products
 export async function getLatestProducts() {
@@ -212,4 +213,25 @@ export async function updateProduct(data: UpdateProductInputs) {
       message: formatError(error),
     };
   }
+}
+
+export async function getAllCategories() {
+  const data = await prisma.product.groupBy({
+    by: ["category"],
+    _count: true,
+  });
+
+  return data;
+}
+
+export async function getFeaturedProducts() {
+  const data = await prisma.product.findMany({
+    where: { isFeatured: true },
+    orderBy: { createdAt: "desc" },
+    take: 4,
+  });
+
+  return convertToPlainObject(data);
+
+
 }
